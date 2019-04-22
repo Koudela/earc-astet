@@ -1,0 +1,49 @@
+ 0 html:
+  1 head:
+        = some meta data
+    body:
+        div:
+#some comment
+#some comment
+          = inhalt: Hello world! #sagte ich
+          =  blabla
+        span:
+            img:
+                - src:
+                    = http://path.to.my.image.png
+                - alt:
+                    = my Image
+    afterbody:
+    divx:
+        - class:
+              $ js: =blablablub.get();
+              $ js: hjgzgghjghjg
+      * if:
+          $ php: =$blabla
+      * elif:
+      * else:
+      * loop:
+          $ php: =$myArray as $mykey => $myVar
+      $ php: $x = 7*4-3;
+      $ php: = $x
+      $ php: < $y
+      $ php: > $z
+        divy:
+afterall:
+        - class: myStupid
+     - style: background-color:blue
+       * onclick:
+    img:
+        - src: http:
+        - alt: some Text
+      #  + event:
+      #    click:
+      #> css:
+      #> jquery:
+      #* javascript:
+      #    =
+      #* twig:
+      #* php:
+      #=
+      #> loop:
+      #$ shellbefehl
