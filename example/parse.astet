@@ -14,6 +14,10 @@
                 - alt:
                     = my Image
     afterbody:
+      $ php: $x = 7*4-3;
+      $ php: = $x
+      $ php: < $y
+      $ php: > $z # same as = $y . $x . $z
     divx:
         - class:
               $ js: =blablablub.get();
@@ -24,10 +28,6 @@
       * else:
       * loop:
           $ php: =$myArray as $mykey => $myVar
-      $ php: $x = 7*4-3;
-      $ php: = $x
-      $ php: < $y
-      $ php: > $z
         divy:
 afterall:
         - class: myStupid

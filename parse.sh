@@ -1,7 +1,8 @@
 #!/bin/bash
-#earc/astet ASynchronous TEmplate Trees
 IFS=
 typeset -i -r whitespacePD=4
+
+rm ./output/*
 
 throw_e()
 {
@@ -34,6 +35,8 @@ read_lines()
     do
         close_node
     done
+
+    ./node_releation_to_list.sh
 }
 
 ################################################################################
