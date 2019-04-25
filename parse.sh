@@ -1,13 +1,29 @@
 #!/bin/bash
 IFS=
-typeset -i -r whitespacePD=4
+typeset -i -r SPACES_INDENT_INPUT=4
+typeset -i -r SPACES_INDENT_OUTPUT_HTML=2
 
-rm ./output/*
+typeset -r FILE_PHP_HEADER=./templates/header_php.tmpl
+typeset -r FILE_PHP_FOOTER=./templates/footer_php.tmpl
+
+typeset -r FILE_PHP=./output/astet.php
+
+typeset -r FILE_CODE_CSV_SCHEME=./output/astet-LNG_NAME.csv
+typeset -r FILE_PHP_CSV=./output/astet-php.csv
+typeset -r FILE_NODE_REL_CSV=./output/astet-node-rel.csv
+typeset -r FILE_NODE_REL_LIST=./output/astet-node-rel.list
 
 throw_e()
 {
     (>&2 echo 'Error in line '${lineNumber}': '$2)
     exit $1
+}
+
+get_csv_code_file()
+{
+    typeset replace=$1
+
+    echo ${FILE_CODE_CSV_SCHEME/LNG_NAME/$replace}
 }
 
 ################################################################################
@@ -35,8 +51,6 @@ read_lines()
     do
         close_node
     done
-
-    ./node_releation_to_list.sh
 }
 
 ################################################################################
@@ -52,7 +66,8 @@ line_regex()
     typeset -r nodeRegex='([a-z]+)\:'
     typeset -r parameterRegex='(|[[:space:]]([^#]*)(|#.*))$'
 
-    echo '('${contentRegex}'|('${depthRegex}'|'${specialRegex}')'${nodeRegex}')'${parameterRegex}
+    echo -n '('${contentRegex}'|('${depthRegex}'|'${specialRegex}')'
+    echo ${nodeRegex}')'${parameterRegex}
 }
 
 ################################################################################
@@ -81,13 +96,15 @@ extract_line_vars()
 
 new_depth()
 {
-    [[ ${BASH_REMATCH[6]} ]] && echo ${BASH_REMATCH[6]} || echo $((${#BASH_REMATCH[4]} / ${whitespacePD}))
+    [[ ${BASH_REMATCH[6]} ]] && echo ${BASH_REMATCH[6]} \
+            || echo $((${#BASH_REMATCH[4]} / ${SPACES_INDENT_INPUT}))
 }
 
 interpret_line_vars()
 {
     [[ ${nextIsContent} ]] && content+=${nextParameter} && return
-    [[ ${nextSpecial} == \$ ]] && (add_dynamic_content) >> "./output/astet-${nextNode}.csv" && return #js, php, sh
+    [[ ${nextSpecial} == \$ ]] && (add_dynamic_content) \
+            >> $(get_csv_code_file ${nextNode}) && return #js, php, sh
     close_special
     [[ ${nextSpecial} ]] && next_special && return
     interpret_node
@@ -176,7 +193,8 @@ close_node()
         nodeHeaderIsClosed=true
     fi
 
-    (save_node_rel ${nodeOrigins[${length}]} ${nodeNames[${length}]}) >>  "./output/astet-node-rel.csv";
+    (save_node_rel ${nodeOrigins[${length}]} ${nodeNames[${length}]}) \
+            >>  ${FILE_NODE_REL_CSV}
 
     unset "nodeNames[${length}]"
     unset "nodeOrigins[${length}]"
@@ -189,14 +207,14 @@ save_node_rel()
 
 print_spaces()
 {
-    typeset -i i=0
+    typeset -i i="$(($1 * SPACES_INDENT_OUTPUT_HTML))"
 
-    echo ''
+    [[ ${nodeNumber} -gt 0 ]] && echo ''
 
-    while [[ ${i} -lt $1 ]];
+    while [[ ${i} -gt 0 ]];
     do
         echo -n ' '
-        ((i++))
+        ((i--))
     done
 }
 
@@ -207,3 +225,12 @@ print_spaces()
 ################################################################################
 
 read_lines
+
+./node_rel_csv_to_list.sh  < ${FILE_NODE_REL_CSV}  > ${FILE_NODE_REL_LIST}
+./build_php.sh  ${FILE_NODE_REL_LIST} ${FILE_PHP_HEADER} ${FILE_PHP_FOOTER} \
+        < $(get_csv_code_file 'php') > ${FILE_PHP}
+
+rm ${FILE_NODE_REL_CSV}
+rm ${FILE_NODE_REL_LIST}
+rm $(get_csv_code_file 'php')
+rm $(get_csv_code_file 'js')

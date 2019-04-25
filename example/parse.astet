@@ -23,11 +23,9 @@
               $ js: =blablablub.get();
               $ js: hjgzgghjghjg
       * if:
-          $ php: =$blabla
-      * elif:
-      * else:
+          $ php: $%blabla
       * loop:
-          $ php: =$myArray as $mykey => $myVar
+          $ php: $myArray as $mykey => $myVar
         divy:
 afterall:
         - class: myStupid

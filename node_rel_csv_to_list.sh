@@ -10,6 +10,6 @@ add_to_list()
 while read -r line
 do
     add_to_list ${line}
-done < ./output/astet-node-rel.csv
+done
 
-echo ${list[@]} > ./output/astet-node-rel.list
+echo ${list[@]}

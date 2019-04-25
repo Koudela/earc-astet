@@ -8,7 +8,7 @@ typeset extensionName
 next_special() {
     case ${nextSpecial} in
         '-') open_attribute;;
-        '*') open_extension;; #loop, if, elif, else, on*
+        '*') open_extension;; #loop, if, on*
     esac
 }
 
