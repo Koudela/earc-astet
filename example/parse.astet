@@ -1,4 +1,6 @@
  0 html:
+* loop:
+$ php: $x as $y => $z
   1 head:
         = some meta data
     body:
@@ -11,6 +13,7 @@
             img:
                 - src:
                     = http://path.to.my.image.png
+                    $ php: = $%tralala
                 - alt:
                     = my Image
     afterbody:

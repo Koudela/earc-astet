@@ -89,7 +89,7 @@ do
     case ${ext} in
         'loop')
             increment_open
-            open_json_element && echo "'loop' => true];"
+            open_json_element && echo "'loop' => ${list[${pos}]}];"
             echo "foreach (${code}) {"
             ;;
         'if')
